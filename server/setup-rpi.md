@@ -113,7 +113,7 @@ In case you want a static ip address, you have to configure the `dhcpcd` daemon 
 interface eth0
 static ip_address=192.168.0.4/24    
 static routers=192.168.1.1
-static domain_name_servers=192.168.0.254 8.8.8.8
+static domain_name_servers=192.168.1.1 8.8.8.8
 ```
 
 This was an example with ethernet connection, for WiFi replace the first line with `interface wlan0`.
