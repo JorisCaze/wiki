@@ -243,7 +243,7 @@ DenyUsers otheruser
 
 To take into account the change you have either to restard the ssh server using `sudo systemctl restart ssh` or reboot.
 
-Default ssh login is based on password, a low-level security. It can be improved by using key authentication. See the article [ssh]() for more details.
+Default ssh login is based on password, a low-level security. It can be improved by using key authentication. See the note [ssh](https://github.com/JorisCaze/wiki/blob/main/server/ssh.md) for more details.
 To remove password authentication after having added your public key to the server use the following:
 
 ```
