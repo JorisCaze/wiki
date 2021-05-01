@@ -83,10 +83,10 @@ To proceed, open the ParaView client GUI and click on the *Connect* button:
 
 Add your server as described below (keep manual configuration and save):
 
-![Initial server list](initial_server_list.png "Initial server list")
+![Initial server list](initial-server-list.png "Initial server list")
 
-![Server configuration](server_config.png "Server configuration")
+![Server configuration](server-config.png "Server configuration")
 
 Connect to your server:
 
-![Final server list](final_server_list.png "Final server list")
+![Final server list](final-server-list.png "Final server list")
