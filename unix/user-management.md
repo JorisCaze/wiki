@@ -34,6 +34,15 @@ $ sudo usermod -a -G groupName userName
 
 The option `-a` to add user to `groupName` and `-G` to keep previous groups which the user is also a member of.
 
+**Note**: To take into account the group modifications it is required to logging out/in. 
+It is also possible to use the command `newgrp` to apply the modification to the current shell.
+Depending on the OS and window manager (WM) the logging out/in procedure might not be sufficient due to processes still running in the background. 
+A restart will therefore be necessary.
+
+References:
+- [Why are user groups not updating when logging out and in again?](https://unix.stackexchange.com/questions/607629/why-are-user-groups-not-updating-when-logging-out-and-in-again)
+- [After adding a group, logout+login is not enough in 18.04?](https://askubuntu.com/questions/1045993/after-adding-a-group-logoutlogin-is-not-enough-in-18-04)
+
 ## Remove user from group
 ```
 $ deluser user group
