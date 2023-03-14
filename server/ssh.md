@@ -155,7 +155,7 @@ The flag `-i` is used to set the path/name of the key. If not set, all public ke
 
 Reference: https://www.ssh.com/ssh/copy-id
 
-## Store passphrase
+## Store passphrase on linux
 
 
 To store a passphrase for a given key `myKey` we can use the `ssh-agent`:
@@ -166,3 +166,25 @@ $ ssh-add -t 1h ~/.ssh/myKey # Store password for myKey with a timeout of 1h
 ```
 
 The `-t` option is not mandatory but this is a good habit.
+
+## Store passphrase on Mac OS
+
+The passphrase can be stored on Mac OS using the keychain tool.
+Once added to the keychain, the following content has to be added to the beginning of the ssh configuration file:
+
+```
+Host *
+ UseKeychain yes
+```
+
+Now, whenever the password is requested by ssh to interact with a host, the keychain tool will provide it.
+
+## Setup automatic authentification for a GitHub repo
+
+To set up automatic ssh key authentication for a GitHub repository, the following content can be added to the ssh configuration file:
+
+```
+Host github.com
+ User git
+ identityFile ~/.ssh/myKey
+```
