@@ -70,3 +70,43 @@ Type `cp *`, then hit `Ctrl+X+*`
 Type `cp *`, then hit `Tab`
 
 **Reference:** https://stackoverflow.com/questions/4585929/how-to-use-cp-command-to-exclude-a-specific-directory
+
+## Compress a directory/file
+
+To compress a directory:
+
+```sh
+tar -czvf archive.tar.gz /path/to/directory-or-file
+```
+
+where the options are:
+- `c`: create an archive
+- `z`: compress the archive with `gzip`
+- `v`: verbose mode to display progress
+- `f`: to specify the filename of the archive
+
+It is also possible to compress multiple directories into a single archive:
+
+```sh
+tar -czvf name-of-archive.tar.gz /path/to/dir1 /path/to/dir2
+```
+
+To exclude from the archive some directories or files, you can use:
+
+```sh
+tar -czvf archive.tar.gz /path/to/dir --exclude=/path/to/folder-to-exclude
+```
+
+## Extract an archive
+
+To extract in the current directory:
+
+```sh
+tar -xzvf archive.tar.gz
+```
+
+To extract in a given folder:
+
+```sh
+tar -xzvf archive.tar.gz -C /folder
+```
