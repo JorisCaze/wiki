@@ -110,3 +110,32 @@ To extract in a given folder:
 ```sh
 tar -xzvf archive.tar.gz -C /folder
 ```
+
+## Create/Remove a symbolic link
+
+A symbolic link can be useful to have a special file that point to another file or directory, think of it as a shortcut.
+
+To create a soft link:
+
+```sh
+ln -s /very/long/path/to/link /my/shortcut
+```
+
+Note to not add the */* at the end of a directory path to make it work.
+
+To remove a soft link (just the link data will exist):
+
+```sh
+rm /my/shortcut
+```
+
+If the symbolic link points to a directory, do not append the */* trailing slash at the end. Otherwise, you will get an error.
+Be also careful to not add `-rf` option with the trailing slash at the end to avoid to delete the original data.
+
+To be safer, a soft link can be removed with `unlink`:
+
+```sh
+unlink /my/shortcut
+```
+
+Again do not append the */* trailing slash at the end of the symlink name because unlink cannot remove directories.
