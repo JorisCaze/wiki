@@ -139,3 +139,15 @@ unlink /my/shortcut
 ```
 
 Again do not append the */* trailing slash at the end of the symlink name because unlink cannot remove directories.
+
+## Download GitHub repo from internet
+
+To download a GitHub repository, you have to set additionnal options to `wget` or `curl`:
+
+```sh
+wget --no-check-certificate --content-disposition https://github.com/repo/code.tar.gz
+# or
+curl -LJO https://github.com/https://github.com/repo/code.tar.gz
+```
+
+**Reference:** [GitHub Gist](https://gist.github.com/jwebcat/5122366)
