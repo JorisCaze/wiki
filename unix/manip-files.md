@@ -151,3 +151,11 @@ curl -LJO https://github.com/https://github.com/repo/code.tar.gz
 ```
 
 **Reference:** [GitHub Gist](https://gist.github.com/jwebcat/5122366)
+
+## Display PATH
+
+Display PATH variable with a newline for each entry:
+
+```sh
+echo $PATH | tr ':' '\n'
+```
