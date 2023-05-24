@@ -1,10 +1,47 @@
-# Setup HPC cluster with slurm
+# Slurm HPC jobs manager
+
+## Basic usage memento
+
+- Display list of partitions: `sinfo`
+- Submit a job using a slurm script: `sbatch ./job.sh`
+- Display list of jobs currently running of a given user (or without `-u` for all users): `squeue -u username`
+- Display history of jobs: `sacct --format=jobid,jobname,elapsed,ncpus,ntasks,start,end,state`
+- Cancel a job: `scancel job-id`
+
+## Job script template
+
+To submit a job with slurm you can use the interactive mode or use a slurm script.
+Since the former is not really conveniant because it requires to type a very long command, the slurm script is preferred.
+Below is given an example file of a job using 1 node of 5 cpus during 7 days:
+
+```
+#!/bin/sh
+
+# Slurm batch directives
+
+#SBATCH -J jobName
+#SBATCH -N 1
+#SBATCH --ntasks-per-node=5
+#SBATCH -t 07-00:00:00
+#SBATCH -o ./%x-%j.out
+#SBATCH -e ./%x-%j.err
+# #SBATCH --mail-type=BEGIN,END
+# #SBATCH --mail-user=user.name@company.com
+
+# Run test
+./code
+
+```
+
+Note that some servers also require to set a partition name with the `-p` option.
+
+## Setup HPC cluster with slurm
 
 Slurm is a job scheduler, very useful to manage run simulations for users on a HPC cluster. 
 
 Here is described the process to install Slurm on a small cluster made of a single node and running on Ubuntu 20.04.
 
-## Install Slurm 
+### Install Slurm 
 
 Slurm can be installed directly from the package manager `apt`:
 
@@ -27,9 +64,9 @@ $ slurmctld -V
 slurm-wlm 19.05.5
 ```
 
-## Configure Slurm
+### Configure Slurm
 
-### Configuration tool
+#### Configuration tool
 
 Slurm can be configured with the help of a configurator tool, either using the online version from the Slurm website or by running locally the configurator tool.
 
@@ -39,7 +76,7 @@ Running locally the configurator tool can be done using an simple web server for
 
 After using the configurator tool a configuration file is generated which must be saved in */etc/slurm-llnl/slurm.conf*.
 
-### Template
+#### Template
 
 Another possibility to configure Slurm is to get a template of the configuration file and modify it to your need.
 
@@ -136,28 +173,9 @@ References:
 - [Raspberry cluster from Medium article](https://glmdev.medium.com/building-a-raspberry-pi-cluster-784f0df9afbd)
 - [Blog post on Signac website](https://signac.io/development/2020/06/26/local-SLURM-environment.html)
 
-## Test Slurm
+### Test Slurm
 
-To make sure everything is working correctly, first use the basic Slurm commands `sinfo`, `squeue -a` and after that prepare a simple job using a `job.sh` file:
-
-```
-#!/bin/sh
-
-# Slurm batch directives
-
-#SBATCH -J jobName
-#SBATCH -N 1
-#SBATCH --ntasks-per-node=5
-#SBATCH -t 07-00:00:00
-#SBATCH -o ./%x-%j.out
-#SBATCH -e ./%x-%j.err
-# #SBATCH --mail-type=BEGIN,END
-# #SBATCH --mail-user=user.name@company.com
-
-# Run test
-# ./code
-
-```
+To make sure everything is working correctly, first use the basic Slurm commands `sinfo`, `squeue -a` and after that prepare a simple job using a `job.sh` file (see example above).
 
 Run it and check status, allocated ressources and so on:
 
@@ -170,7 +188,7 @@ $ sinfo -o "%.8P %.5a %.6D %.6t %.8N %.9B %.11A %.14C %.6D %.8O"
 $ squeue -o "%.18i %.9P %.8j %.8u %.2t %.10M %.8C"
 ```
 
-## Add mail support
+### Add mail support
 
 If you want to add email support to receive an email when a job start or end you need to install a Postfix mail server (see mail.md) and modify the */etc/slurm-llnl/slurm.conf* file to tell Slurm to use the Postfix server to send the email:
 
