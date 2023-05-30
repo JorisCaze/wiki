@@ -145,6 +145,8 @@ Once you type out the command the tool will ask you the name for you key. By def
 
 ## Add key to server
 
+### If password not deactivated yet
+
 The `ssh-copy-id` command allows you to add the public key on the authorized key file on server.
 
 ```
@@ -154,6 +156,33 @@ $ ssh-copy-id -i ~/.ssh/mykey.pub user@host
 The flag `-i` is used to set the path/name of the key. If not set, all public keys in `~/.ssh/` folder will be added.
 
 Reference: https://www.ssh.com/ssh/copy-id
+
+### Without password authentication
+
+In case password authentication is already deactivated, the admin sys (user with sudo permissions) must add it to your account for you.
+
+It can be done by following these steps:
+
+```sh
+# Send the public key of the new user into your admin home
+scp key_new_user.pub admin@server:
+# Switch to root
+sudo su
+# Create user ssh folder if not yet created
+mkdir /home/new_user/.ssh
+# Move its key there
+mv ~/key_new_user.pub /home/new_user/.ssh/
+# Add the key to its list of authorized keys
+cd /home/new_user/.ssh/
+cat key_new_user.pub >> .ssh/authorized_keys
+# Set appropriate permissions and user ownership
+chmod 644 authorized_keys
+chmod 644 key_new_user.pub
+chown new_user:new_user key_new_user.pub authorized_keys
+cd ..
+chmod 700 .ssh
+chown new_user:new_user .ssh
+```
 
 ## Store passphrase on linux
 
@@ -188,3 +217,42 @@ Host github.com
  User git
  identityFile ~/.ssh/myKey
 ```
+
+## Server configuration
+
+The ssh server configuration is stored in the file */etc/ssh/sshd_config*.
+
+### Change default port
+
+To change the default port, follow the steps below:
+
+- Open the config file: `vim /etc/ssh/sshd_config`
+- Edit the default ssh port by replacing the line *Port 22* by the port you want.
+  
+  Be careful to not use a port already in use, custom ports are usually defined in the range 1024 to 65536. 
+
+- Restart the ssh daemon: `service sshd restart`
+
+Reference: [Ionos article](https://www.ionos.com/help/server-cloud-infrastructure/getting-started/important-security-information-for-your-server/changing-the-default-ssh-port/)
+
+### Deactivate password authentication
+
+To make your ssh server more secure it is recommended to deactivate password authentication and rely on key-based authentication.
+After adding your ssh key to the server and making sure that you are able to connect with it, modify the server ssh configuration file as described:
+
+- Open the config file: `vim /etc/ssh/sshd_config`
+- Edit the line *PasswordAuthentication* and replace it with: *PasswordAuthentication no*.
+- If not used, it also recommended to set the following options:
+    - *UsePAM no*
+    - *PermitRootLogin no*
+
+    Note that PAM is an additionnal authentication module that is not of interest for simple setup and root login is forbidden to reduce the surface of attacks.
+    Note also that PAM must be set to *yes* in case the server is a GitLab instance to allow Git operations through ssh (see [this issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/935)).
+- Restart the ssh daemon: `service sshd restart`
+
+Pro-tip: to avoid to be locked out of the system in case of problem when deactivating password authentication, keep a terminal tab open with a sudo user logged in and do your testing of key authentication with another tab. 
+
+Note that specific configuration file can be created to override the default */etc/ssh/sshd_config* file in */etc/ssh/sshd_config.d/*.
+If you are not using them make sure there is not a file created automatically by the system that overrides the *sshd_config* file.
+
+Reference: [Cyberciti](https://www.cyberciti.biz/faq/how-to-disable-ssh-password-login-on-linux/)

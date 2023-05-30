@@ -186,3 +186,84 @@ Below is the procedure for cold disk replacement, i.e., with the machine powered
 - Format a partition:
   - With a Linux filesystem: `sudo mkfs.ext4 /dev/sdb`
   - With a FAT32 filesystem (useful for bootloader or USB drive, for example): `sudo mkfs.fat -F32 /dev/sdb`
+
+
+## Send email in case of disk problem
+
+Install and configure an email client such as Sendmail or Postfix (see the documentation *mail.md*).
+
+### Email only in case of disk problem
+
+To be notified by email in case there is a problem with the RAID array, the script below can be used. 
+
+Here the `mdadm` RAID tool is ran in test mode on the RAID array of interest.
+This mode allows to get an error code in case of any problems (!= 0). 
+If any error occurs, the whole status of the RAID setup is sent by email to the admin of the server.
+
+```sh
+#!/bin/bash
+
+# Check if there is a problem of disk in the RAID array
+
+/usr/sbin/mdadm --detail --test /dev/md1 &> /dev/null
+
+if [ "$?" != "0" ]
+then
+        cat /proc/mdstat > /var/log/raid-status.txt
+        /usr/bin/mail -s "Disk problem on alfred server" user@example.com -a From:server@example.com < /var/log/raid-status.txt
+        rm /var/log/raid-status.txt
+fi
+```
+
+This script could be stored in */usr/local/bin/* to be in the PATH and use executable permissions with root ownership. 
+
+Define a system cron job to run every every day at 1 AM: 
+
+```sh
+sudo crontab -e
+0 1 * * * /usr/local/bin/raid.sh
+```
+
+### Automatic email with RAID status
+
+In case you want to receive a report of the RAID status automatically, follow the method presented below.
+
+- Configure `mdadm` email notifications
+
+Open the mdadm configuration file */etc/mdadm/mdadm.conf* in a text editor. 
+If the file doesn't exist, you can create it and the data of your current RAID devices:
+
+```sh
+sudo mdadm --detail --scan --verbose | sudo tee -a /etc/mdadm/mdadm.conf
+```
+
+Add the following lines to the file:
+
+```sh
+MAILADDR your_email@example.com
+MAILFROM mdadm@your_hostname
+```
+
+Replace `your_email@example.com` with the email address where you want to receive notifications, and `your_hostname` with the hostname of your machine.
+
+- Test the email configuration
+
+To ensure that your email configuration is working correctly, you can use the `mdadm` command with the `--monitor` option to manually simulate a disk failure and check if you receive an email notification. 
+Run the following command:
+
+```sh
+sudo mdadm --monitor --scan --test --oneshot
+```
+
+If your email configuration is correct, you should receive an email with details about the simulated disk failure. 
+If you don't receive an email, double-check your email client configuration and the *mdadm.conf* file.
+
+- Schedule email notifications 
+
+To automate the monitoring and email notifications, you can add a cron job to periodically check the status of the RAID array. Open a terminal and run the following command to edit the crontab file: `crontab -e`.
+
+Add the following line to the file to run the monitoring command every day at 1 AM:
+
+```sh
+0 1 * * * sudo mdadm --monitor --scan --oneshot
+```
