@@ -325,3 +325,27 @@ gitlab_rails['gitlab_shell_ssh_port'] = 2611
 Note that this option only change the url that you can copy to clone a repository on the GitLab website. 
 Even if the port is not set in the GitLab configuration file, you can clone and do normal Git operation by adding manually the port in the remote url.
 Therefore, this option is more a cosmetic option meaning that it makes easier to get the good url.
+
+### Send application email
+
+In case you want to send GitLab notification email via an external SMTP server (Gmail for example) instead of via Sendmail or Postfix you have to edit the configuration file */etc/gitlab/gitlab.rb* .
+Application emails include CI/CD notification when failed status, issues assigment and others.
+
+For more information on the general configuration see the [documentation](https://docs.gitlab.com/omnibus/settings/smtp.html).
+
+To use Gmail as an external SMTP server, use the following configuration for your GitLab instance:
+
+```sh
+gitlab_rails['smtp_enable'] = true
+gitlab_rails['smtp_address'] = "smtp.gmail.com"
+gitlab_rails['smtp_port'] = 587
+gitlab_rails['smtp_user_name'] = "my.email@gmail.com"
+gitlab_rails['smtp_password'] = "my-gmail-password"
+gitlab_rails['smtp_domain'] = "smtp.gmail.com"
+gitlab_rails['smtp_authentication'] = "login"
+gitlab_rails['smtp_enable_starttls_auto'] = true
+gitlab_rails['smtp_tls'] = false
+gitlab_rails['smtp_openssl_verify_mode'] = 'peer'
+```
+
+To setup the redirection with Gmail external SMTP server, see the *mail.md* documentation.
