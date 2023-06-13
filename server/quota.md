@@ -177,3 +177,27 @@ bob       --     52K    250G    300G             15     0     0
 References:
 - [Alibaba Cloud article](https://www.alibabacloud.com/blog/how-to-set-up-disk-quota-on-ubuntu-18-04-server_595877)
 - [Linux Hint article](https://linuxhint.com/disk_quota_ubuntu/)
+
+### Automatically assign quota to new user
+
+In case you want to automatically assign a default quota when a new user is created, you can edit the parameters of the `adduser` utility.
+
+First, you need to create a new user that will have the default quota set to the values you want:
+
+```
+# adduser quota-user
+# setquota -u quota-user 100G 120G 0 0 /home
+```
+
+Now edit the `adduser` parameters in its config file */etc/adduser.conf* with the option `QUOTAUSER` set to the newly created user *quota-user*.
+This parameter will set the quota of any new user by cloning the quota of the user specified which is here *quota-user*.
+For more information about this option you check the documentation `man adduser.conf`.
+
+Test to create a new user and make sure he has the proper quota:
+
+```
+# adduser test
+# repquota -s /home
+```
+
+References: [Ask Ubuntu forum](https://askubuntu.com/questions/544038/is-there-a-way-to-automatically-assign-new-users-a-disk-quota-limit-as-they-are)
