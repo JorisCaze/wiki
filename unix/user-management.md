@@ -57,3 +57,12 @@ $ cat /etc/passwd
 ```
 $ cat /etc/group
 ```
+
+## Disable access to server for a specific user
+```
+sudo passwd --lock <username>
+```
+And reverse:
+```
+sudo passwd --unlock <username>
+```
