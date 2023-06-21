@@ -66,3 +66,11 @@ And reverse:
 ```
 sudo passwd --unlock <username>
 ```
+To check the status of all (`-a`) users: 
+```
+sudo passwd -a -S
+```
+or for a given user:
+```
+sudo passwd -S <username>
+```
