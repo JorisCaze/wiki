@@ -349,3 +349,16 @@ gitlab_rails['smtp_openssl_verify_mode'] = 'peer'
 ```
 
 To setup the redirection with Gmail external SMTP server, see the *mail.md* documentation.
+
+### Fix English locale error during GitLab installation
+
+Since I am french, it is often that my locale is set by default to `fr_FR.UTF-8`. 
+Unfortunatly, since GitLab requires an English UTF-8 locale to work it might lead to the following error during installation: 
+*WARN: Please install an English UTF-8 locale for Cinc Client to use, falling back to C locale and disabling UTF-8 support.*
+
+To add the missing english locale, use: `dpkg-reconfigure locales`
+and enable `en-US.UTF-8` or `en-GB.UTF-8`. 
+
+Now, simply restart the configuration process: `sudo gitlab-ctl reconfigure`
+
+Reference: [GitLab forum](https://forum.gitlab.com/t/warn-please-install-an-english-utf-8-locale-for-chef-infra-client-to-use-falling-back-to-c-locale-and-disabling-utf-8-support/71851)
