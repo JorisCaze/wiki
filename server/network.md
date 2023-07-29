@@ -37,3 +37,19 @@ Note also that this file does not handle tabs and that unexpected behaviors migh
 - Check the new network configuration: `ip a`
 
 **Reference:** [FreeCodeCamp tutorial](https://www.freecodecamp.org/news/setting-a-static-ip-in-ubuntu-linux-ip-address-tutorial/)
+
+## Check DNS server in use
+
+To check out which DNS server you are currently using, you can query the name server of a given website with `nslookup`.
+It will give you the information you asked along with the DNS used to run the query.
+A simple example looks like this:
+
+```sh
+nslookup google.com
+Server:		1.1.1.1
+Address:	1.1.1.1#53
+
+Non-authoritative answer:
+Name:	google.com
+Address: X.X.X.X
+```
