@@ -1,4 +1,4 @@
-# Drive management
+# Hard Disk management
 
 ## Wipe hard drive securely
 
@@ -14,7 +14,7 @@ df -h
 fdisk -l
 ```
 
-## Format disk partition
+## Create filesystem on a given partition
 
 ```
 mkfs -t ext4 /dev/sdb1
@@ -84,3 +84,19 @@ More informations about fstab structure can be found [here](https://www.linuxtri
 ```
 umount /media/storage
 ```
+
+## Process to add new disk storage
+
+- Create a GPT partition table `sudo fdisk /dev/sdb` (delete previous partitions if needed)
+- Create a new partition within `fdisk`
+- Create the filesystem on the new partition `mkfs.ext4 /dev/sdb1`
+- Mount it temporarily to make sure everything is working
+
+    - Create mount point `sudo mkdir /mnt/test`
+    - Mount the drive `sudo mount /dev/sdb1 /mnt/test` 
+    - Unmount once finished `sudo umount /dev/sdb1` 
+
+- Mount it automatically on boot with `fstab` 
+
+    - Get the UUID of the drive (more reliable disk identifier than */dev/sdX*) `blkid` or `ls -l /dev/disk/by-uuid/`
+    - Add the new entry `sudo vim /etc/fstab` such as *UUID=993b8777-4bc1-4933-964a-a4fac87f1795 /media/hdd ext4 defaults 0 1*
